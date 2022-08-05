@@ -22,14 +22,17 @@ while game_is_on:
     time.sleep(0.1)
     screen.update()
 
+    # Consistently create cars throughout life cycle of the game
     cars.make_car()
     cars.move_forward()
 
+    # collision with any of the cars
     for car in cars.car_list:
         if player.distance(car) < 20:
             scoreboard.game_over()
             game_is_on = False
 
+    # Once turtle reaches other side, reset and speed up cars
     if player.is_at_finish_line():
         player.go_to_start()
         cars.faster()
