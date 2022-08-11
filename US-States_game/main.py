@@ -21,13 +21,11 @@ while len(already_guessed) < 50:
         already_guessed.append(answer_state)
         states.remove(answer_state)
         state = data[data['state'] == answer_state]
-        x_coordinate = int(state['x'])
-        y_coordinate = int(state['y'])
         state_write = turtle.Turtle()
         state_write.hideturtle()
         state_write.penup()
         state_write.color('black')
-        state_write.goto(x_coordinate, y_coordinate)
+        state_write.goto(int(state['x']), int(state['y']))
         state_write.write(answer_state)
 
 df = pandas.DataFrame(states)
