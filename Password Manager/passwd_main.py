@@ -2,6 +2,25 @@ from tkinter import *
 from tkinter import messagebox
 from random import randint, choice, shuffle
 import pyperclip
+import json
+
+
+# ---------------------------- SEARCH WEBSITE ------------------------------- #
+def search_website():
+    site_to_search = site_entry.get().title()
+
+    try:
+        with open('data.json', 'r') as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        messagebox.showerror(title='Error', message='No Data File Found')
+    else:
+        if site_to_search in data:
+            email = data[site_to_search]['email']
+            password = data[site_to_search]['password']
+            messagebox.showinfo(title=site_to_search, message=f'Email: {email}\n\nPassword: {password}')
+        else:
+            messagebox.showinfo(title='No website info saved', message=f'No details for {site_to_search} exists')
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -28,21 +47,37 @@ def generate_password():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_password():
-    website = site_entry.get()
+    website = site_entry.get().title()
     email = user_entry.get()
     passwd = passwd_entry.get()
+    new_data = {
+        website: {
+            'email': email,
+            'password': passwd,
+        }
+    }
 
     if len(website) == 0 or len(passwd) == 0:
         messagebox.showinfo(title='Empty Fields', message='Please don\'t leave any fields empty!')
     else:
-        is_ok = messagebox.askokcancel(title=website, message=f'These are the details entered: '
-                                                              f'\nEmail: {email}\nPassword: {passwd}'
-                                                              f'\nIs it ok to save?')
-        if is_ok:
-            with open(file='data.txt', mode='a') as data:
-                data.write(f'{website} | {email} | {passwd}\n')
-                site_entry.delete(0, END)
-                passwd_entry.delete(0, END)
+        try:
+            with open(file='data.json', mode='r') as data_file:
+                # Read old data
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open('data.json', 'w') as data_file:
+                # Create new json file
+                json.dump(new_data, data_file, indent=4)
+        else:
+            # Update old data with new data
+            data.update(new_data)
+
+            with open('data.json', 'w') as data_file:
+                # Save updated data
+                json.dump(data, data_file, indent=4)
+        finally:
+            site_entry.delete(0, END)
+            passwd_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -73,8 +108,8 @@ passwd_label.grid(row=3, column=0)
 
 # ------------------------------Entries------------------------------ #
 # Website Entry
-site_entry = Entry(width=35)
-site_entry.grid(row=1, column=1, columnspan=2)
+site_entry = Entry(width=17)
+site_entry.grid(row=1, column=1)
 site_entry.focus()
 
 # Email/Username entry
@@ -94,5 +129,9 @@ generate.grid(row=3, column=2)
 # Add Button
 add = Button(text='Add', command=add_password, width=30)
 add.grid(row=4, column=1, columnspan=2)
+
+# Search Button
+search = Button(text='Search', command=search_website, width=14)
+search.grid(row=1, column=2)
 
 window.mainloop()
