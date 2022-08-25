@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="C:\Users\yadao\Downloads\birthday-wisher-extrahard-start\birthdays.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\NATO-alphabet\nato_phonetic_alphabet.csv">
           <value>
             <Attribute>
